@@ -1,0 +1,90 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and preferences",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "preferences": {
+          "type": "object",
+          "properties": {
+            "dailyStartHour": { "type": "integer" },
+            "dailyEndHour": { "type": "integer" },
+            "defaultStudyDuration": { "type": "integer" }
+          }
+        }
+      },
+      "required": ["uid", "email"]
+    },
+    "ScheduleEvent": {
+      "title": "Schedule Event",
+      "description": "A calendar event for classes, exams, or study sessions",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "type": { "type": "string", "enum": ["class", "exam", "study", "personal", "assignment_deadline", "other"] },
+        "startTime": { "type": "string", "format": "date-time" },
+        "endTime": { "type": "string", "format": "date-time" },
+        "location": { "type": "string" },
+        "description": { "type": "string" },
+        "color": { "type": "string" },
+        "relatedAssignmentId": { "type": "string" },
+        "recurrence": {
+          "type": "object",
+          "properties": {
+            "frequency": { "type": "string", "enum": ["daily", "weekly", "monthly", "none"] },
+            "daysOfWeek": { "type": "array", "items": { "type": "integer" } },
+            "until": { "type": "string", "format": "date-time" }
+          }
+        }
+      },
+      "required": ["title", "type", "startTime", "endTime"]
+    },
+    "Assignment": {
+      "title": "Assignment",
+      "description": "An academic assignment or task",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "subject": { "type": "string" },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "priority": { "type": "string", "enum": ["low", "medium", "high"] },
+        "status": { "type": "string", "enum": ["todo", "in_progress", "completed"] },
+        "description": { "type": "string" }
+      },
+      "required": ["title", "dueDate", "status"]
+    },
+    "ChatMessage": {
+      "title": "Chat Message",
+      "description": "A message in a conversation with the AI assistant",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "model", "system"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["text", "role", "timestamp"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "The user's account data"
+    },
+    "users/{userId}/events/{eventId}": {
+      "schema": "ScheduleEvent",
+      "description": "Calendar events for the user"
+    },
+    "users/{userId}/assignments/{assignmentId}": {
+      "schema": "Assignment",
+      "description": "Academic assignments tracking"
+    },
+    "users/{userId}/messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Simple flat message history for now"
+    }
+  }
+}
